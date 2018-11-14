@@ -38,7 +38,9 @@ class ArgParserTestCase(TestCase):
         self.assertEqual(parser.video, False)
 
     def test_parse_args__audio(self):
-        """Check argument 'audio' parsing"""
+        """
+        Check argument 'audio' parsing
+        """
 
         # No folders are provided
         args = ['-a']
