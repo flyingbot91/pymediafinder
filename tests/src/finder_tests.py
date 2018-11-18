@@ -78,6 +78,23 @@ class ArgParserTestCase(TestCase):
         self.assertEqual(parser.folders, args[0:1])
         self.assertEqual(parser.video, True)
 
+    def test_parse_args__extensions(self):
+        """Check argument 'extensions' parsing"""
+
+        # Single extension
+        for ext in ['-e', '--extensions']:
+            args = [self.dummy_folder, ext, 'mp3']
+            parser = parse_args(args)
+            self.assertEqual(parser.folders, args[0:1])
+            self.assertEqual(parser.extensions, ['mp3'])
+
+        # Multiple extensions
+        for ext in ['-e', '--extensions']:
+            args = [self.dummy_folder, ext, 'mp3', 'mp4']
+            parser = parse_args(args)
+            self.assertEqual(parser.folders, args[0:1])
+            self.assertEqual(parser.extensions, ['mp3', 'mp4'])
+
 
 if __name__ == '__main__':
     main()
