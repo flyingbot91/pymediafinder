@@ -42,41 +42,44 @@ class ArgParserTestCase(TestCase):
         Check argument 'audio' parsing
         """
 
-        # No folders are provided
-        args = ['-a']
-        self.assertRaises(SystemExit, parse_args, args)
+        for arg in ['-a', '--audio']:
+            # No folders are provided
+            args = [arg]
+            self.assertRaises(SystemExit, parse_args, args)
 
-        # Audio files set
-        args = [self.dummy_folder, '-a']
-        parser = parse_args(args)
-        self.assertEqual(parser.folders, args[0:1])
-        self.assertEqual(parser.audio, True)
+            # Audio files set
+            args = [self.dummy_folder, arg]
+            parser = parse_args(args)
+            self.assertEqual(parser.folders, args[0:1])
+            self.assertEqual(parser.audio, True)
 
     def test_parse_args__text(self):
         """Check argument 'text' parsing"""
 
-        # No folders are provided
-        args = ['-t']
-        self.assertRaises(SystemExit, parse_args, args)
+        for arg in ['-t', '--text']:
+            # No folders are provided
+            args = [arg]
+            self.assertRaises(SystemExit, parse_args, args)
 
-        # Text files set
-        args = [self.dummy_folder, '-t']
-        parser = parse_args(args)
-        self.assertEqual(parser.folders, args[0:1])
-        self.assertEqual(parser.text, True)
+            # Text files set
+            args = [self.dummy_folder, arg]
+            parser = parse_args(args)
+            self.assertEqual(parser.folders, args[0:1])
+            self.assertEqual(parser.text, True)
 
     def test_parse_args__video(self):
         """Check argument 'video' parsing"""
 
-        # No folders are provided
-        args = ['-v']
-        self.assertRaises(SystemExit, parse_args, args)
+        for arg in ['-v', '--video']:
+            # No folders are provided
+            args = [arg]
+            self.assertRaises(SystemExit, parse_args, args)
 
-        # Video files set
-        args = [self.dummy_folder, '-v']
-        parser = parse_args(args)
-        self.assertEqual(parser.folders, args[0:1])
-        self.assertEqual(parser.video, True)
+            # Video files set
+            args = [self.dummy_folder, arg]
+            parser = parse_args(args)
+            self.assertEqual(parser.folders, args[0:1])
+            self.assertEqual(parser.video, True)
 
     def test_parse_args__extensions(self):
         """Check argument 'extensions' parsing"""
