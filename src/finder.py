@@ -3,36 +3,65 @@
 
 """
 import argparse
+import fnmatch
 import os
 import sys
 
-from glob import iglob
 from pymediainfo import MediaInfo
 
 
 def main(parser):
     """
     Main method
-    :param parser:
-    :return:
+    :param parser: (argparse.Namespace)
+    :return: [str] List of filepaths.
     """
 
-    regexes = ['**/*.*']
+    filepaths = []
+
+    regexes = ['*.*']
     if parser.extensions:
-        regexes = ['**/*.%s' % extension for extension in parser.extensions]
+        regexes = ['*.%s' % extension for extension in parser.extensions]
 
     for folder in parser.folders:
         for regex in regexes:
-            for filepath in iglob(os.path.join(folder, regex), recursive=True):
-                if parser.audio or parser.text or parser.video:
-                    media_info = MediaInfo.parse(filepath)
-                    for track in media_info.tracks:
-                        if parser.audio and track.track_type == 'Audio':
-                            print("AUDIO:", filepath)
-                        if parser.text and track.track_type == 'Text':
-                            print("TEXT:", filepath)
-                        if parser.video and track.track_type == 'Video':
-                            print("VIDEO:", filepath)
+            for root, dirs, files in os.walk(folder):
+                for filename in fnmatch.filter(files, regex):
+                    filepath = os.path.join(root, filename)
+                    if any([parser.audio, parser.text, parser.video]):
+                        # Parse only if the previous conditions are met.
+                        if match_file_properties(filepath, parser):
+                            filepaths.append(filepath)
+                    else:
+                        filepaths.append(filepath)
+
+    return filepaths
+
+
+def match_file_properties(filepath, parser):
+    """
+
+    :param filepath: (str) Fully qualified file path.
+    :param parser: (argparse.Namespace)
+    :return: (bool) True if <filepath> matches the requirements provided by <parser>. False otherwise.
+    """
+
+    desired_tracks = {
+        'Video': parser.video,
+        'Audio': parser.audio,
+        'Text': parser.text
+    }
+
+    media_info = MediaInfo.parse(filepath)
+    for track_name, is_required in desired_tracks.items():
+        if is_required:
+            for mtrack in media_info.tracks:
+                if mtrack.track_type == track_name:
+                    break
+            else:
+                return False
+
+    return True
 
 
 def parse_args(*args, **kwargs):
